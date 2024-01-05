@@ -102,3 +102,23 @@
 		- 등록버튼 클릭시, 등록화면 호출 : insertDeptFrm.do
 		- var msg = "${ msg }"
 		등록 처리 완료
+		
+3. 부서정보 (수정/삭제) 화면로딩
+	0) jsp(list)
+		<tr ondblclick="detail(${d.deptno})"
+		function detail(deptno) {
+			location.href = "${path}/dept.do?deptno=" + deptno
+		}
+	1) sql select * from dept02 where deptno = #{deptno}
+	2) vo
+	3) dao/mapper
+		Dept getDept(int deptno);
+	4) service
+	5) controller
+		dept.do
+			d.addAttribute("dept", service.getDept(sch));
+			return "a04_deptDetail.jsp"
+	6) view(jsp)
+		value="${dept.deptno}"
+		value="${dept.dname}"
+		value="${dept.loc}"

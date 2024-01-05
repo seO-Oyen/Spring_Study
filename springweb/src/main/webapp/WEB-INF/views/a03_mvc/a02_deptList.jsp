@@ -32,7 +32,11 @@
 				location.href = "${ path }/insertDeptFrm.do"
 			}
 		})
+		
 	});
+	function detail(deptno) {
+		location.href = "${path}/dept.do?deptno=" + deptno
+	}
 </script>
 </head>
 
@@ -67,7 +71,7 @@
     </thead>	
     <tbody>
     	<c:forEach var="dept" items="${dlist}">
-    	<tr><td>${dept.deptno}</td>
+    	<tr ondblclick="detail(${dept.deptno})"><td>${dept.deptno}</td>
     	    <td>${dept.dname }</td>
     		<td>${dept.loc }</td></tr>
     	</c:forEach>

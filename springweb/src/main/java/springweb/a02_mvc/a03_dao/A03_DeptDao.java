@@ -10,4 +10,5 @@ public interface A03_DeptDao {
 	
 	int insertDept(Dept ins);
 	
+	Dept getDept(int deptno);
 }
