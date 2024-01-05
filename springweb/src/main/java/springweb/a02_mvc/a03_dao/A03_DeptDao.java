@@ -8,4 +8,6 @@ public interface A03_DeptDao {
 
 	List<Dept> getDeptList(Dept sch);
 	
+	int insertDept(Dept ins);
+	
 }

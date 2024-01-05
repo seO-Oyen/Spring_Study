@@ -9,7 +9,7 @@
 <%--
 
 
---%>
+ --%>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -27,89 +27,81 @@
 <script src="https://developers.google.com/web/ilt/pwa/working-with-the-fetch-api" type="text/javascript"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
-		$("form").on("keypress",function(e){
-			if(e.keyCode==13){   //  enter키의 keycode는 13
-				e.preventDefault() // enter키의 기본 동작을 중단 처리
+		$("#regBtn").click(function() {
+			if(confirm("등록하시겠습니까?")) {
+				location.href = "${ path }/insertDeptFrm.do"
 			}
-		})		
+		})
 	});
 </script>
 </head>
 
 <body>
-	<div class="jumbotron text-center">
-		<h2></h2>
+<div class="jumbotron text-center">
+  <h2>부서정보리스트</h2>
 
-	</div>
-	<%-- 
+</div>
+<%-- 
 		
-    --%>
-	<div class="container">
-		<form id="frm01" class="form" method="post">
-			<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-				<input placeholder="부서명" name="dname" value="${ param.dname }" class="form-control mr-sm-2" /> <input
-					placeholder="부서위치" name="loc" value="${ param.loc }" class="form-control mr-sm-2" />
-				<button class="btn btn-info" type="submit">Search</button>
-				<button class="btn btn-success" type="button">등록</button>
-			</nav>
-		</form>
-		<table class="table table-hover table-striped">
-			<col width="33%">
-			<col width="33%">
-			<col width="34%">
-			<thead>
-
-				<tr class="table-success text-center">
-					<th>부서번호</th>
-					<th>부서명</th>
-					<th>부서위치</th>
-				</tr>
-			</thead>
-			<tbody>
-				<c:forEach var="dept" items="${ dlist }" >
-				<tr>
-					<td>${ dept.deptno }</td>
-					<td>${ dept.dname }</td>
-					<td>${ dept.loc }</td>
-				</tr>
-				</c:forEach>
-			</tbody>
-		</table>
-
-	</div>
-	<div class="modal fade" id="exampleModalCenter" tabindex="-1"
-		role="dialog" aria-labelledby="exampleModalCenterTitle"
-		aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLongTitle">타이틀</h5>
-					<button type="button" class="close" data-dismiss="modal"
-						aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<form id="frm02" class="form" method="post">
-						<div class="row">
-							<div class="col">
-								<input type="text" class="form-control" placeholder="사원명 입력"
-									name="ename">
-							</div>
-							<div class="col">
-								<input type="text" class="form-control" placeholder="직책명 입력"
-									name="job">
-							</div>
-						</div>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
-				</div>
-			</div>
-		</div>
-	</div>
+--%>
+<div class="container">
+	<form id="frm01" class="form"  method="post">
+  	<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+	    <input placeholder="부서명" name="dname" value="${param.dname}"  class="form-control mr-sm-2" />
+	    <input placeholder="부서위치" name="loc" value="${param.loc}"    class="form-control mr-sm-2"/>
+	    <button class="btn btn-info" type="submit">Search</button>
+	    <button id="regBtn" class="btn btn-success" type="button">등록</button>
+ 	</nav>
+	</form>
+   <table class="table table-hover table-striped">
+   	<col width="33%">
+   	<col width="34%">
+   	<col width="33%">
+    <thead>
+    
+      <tr class="table-success text-center">
+        <th>부서번호</th>
+        <th>부서명</th>
+        <th>부서위치</th>
+      </tr>
+    </thead>	
+    <tbody>
+    	<c:forEach var="dept" items="${dlist}">
+    	<tr><td>${dept.deptno}</td>
+    	    <td>${dept.dname }</td>
+    		<td>${dept.loc }</td></tr>
+    	</c:forEach>
+    </tbody>
+	</table>    
+    
+</div>
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">타이틀</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+		<form id="frm02" class="form"  method="post">
+	     <div class="row">
+	      <div class="col">
+	        <input type="text" class="form-control" placeholder="사원명 입력" name="ename">
+	      </div>
+	      <div class="col">
+	        <input type="text" class="form-control" placeholder="직책명 입력" name="job">
+	      </div>
+	     </div>
+	    </form> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>

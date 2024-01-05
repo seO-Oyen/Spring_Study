@@ -75,6 +75,30 @@
 	6) view단 처리
 		WEB-INF\view\a03_mvc\a02_deptList.jsp
 2. 부서정보 등록
+	0) 등록화면 로딩
+		- jsp 등록버튼 클릭시, 등록화면 호출 : insertDeptFrm.do
+		- controller
+			insertDeptFrm.do로
+		insertDeptFrm.do
+			a03_deptInsert.jsp
+		등록화면에 <input name="deptno"
+				<input name="dname"
+				<input name="loc"
+			<form action="${ path }/insertDept.do
+			등록버튼 클릭시 입력처리 유효 js처리
 	1) sql
 	2) vo
-	3)
+	3) dao/mapper
+		int insertDept(Dept ins);
+	4) service(dao 호출)
+	5) controller
+		insertDept.do
+		public String insertDept(Dept ins, Model d)
+			d.addAttribute("msg", ...);
+			
+		insertDeptFrm.do
+			a03_deptInsert.jsp
+	6) jsp
+		- 등록버튼 클릭시, 등록화면 호출 : insertDeptFrm.do
+		- var msg = "${ msg }"
+		등록 처리 완료

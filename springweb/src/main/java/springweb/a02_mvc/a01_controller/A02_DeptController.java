@@ -19,4 +19,17 @@ public class A02_DeptController {
 		
 		return "WEB-INF\\views\\a03_mvc\\a02_deptList.jsp";
 	}
+	
+	@RequestMapping("insertDeptFrm.do")
+	public String insertDeptFrm() {
+		
+		return "WEB-INF\\views\\a03_mvc\\a03_deptInsert.jsp";
+	}
+	
+	@RequestMapping("insertDept.do")
+	public String insertDept(Dept ins, Model d) {
+		d.addAttribute("msg", service.insertDept(ins) > 0 ? "등록성공" : "등록실패");
+		
+		return "WEB-INF\\views\\a03_mvc\\a03_deptInsert.jsp";
+	}
 }

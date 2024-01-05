@@ -12,4 +12,8 @@
 		AND loc LIKE '%'||#{ loc } ||'%'
 	</select>
 	
+	<insert id="insertDept" parameterType="dept">
+		insert into dept02 values(#{ deptno }, #{ dname }, #{ loc })
+	</insert>
+	
 </mapper>

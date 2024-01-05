@@ -21,4 +21,8 @@ public class A02_DeptService {
 		
 		return dao.getDeptList(sch);
 	}
+	
+	public int insertDept(Dept ins) {
+		return dao.insertDept(ins);
+	}
 }
