@@ -47,11 +47,10 @@
 	<div class="container">
 		<form id="frm01" class="form" method="post">
 			<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-				<input placeholder="제목" name="" class="form-control mr-sm-2" /> <input
-					placeholder="내용" name="" class="form-control mr-sm-2" />
+				<input placeholder="부서명" name="dname" value="${ param.dname }" class="form-control mr-sm-2" /> <input
+					placeholder="부서위치" name="loc" value="${ param.loc }" class="form-control mr-sm-2" />
 				<button class="btn btn-info" type="submit">Search</button>
-				<button class="btn btn-success" data-toggle="modal"
-					data-target="#exampleModalCenter" type="button">등록</button>
+				<button class="btn btn-success" type="button">등록</button>
 			</nav>
 		</form>
 		<table class="table table-hover table-striped">

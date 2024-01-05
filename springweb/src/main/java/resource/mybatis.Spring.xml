@@ -18,6 +18,7 @@
 	<mappers>
 		<mapper resource="resource/ExpMapper.xml"/>
 		<mapper resource="resource/Exp02Mapper.xml"/>
+		<mapper resource="resource/DeptMapper.xml"/>
 		<mapper resource="resource/Z0102Mapper.xml"/>
 	</mappers>
 

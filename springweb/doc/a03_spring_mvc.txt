@@ -60,11 +60,21 @@
 	8) [view단]위 모델데이터를 화면에 처리할 위치나 방법을 결정하고 출력한다.
 	9) 전체 테스트 진행
 	
-	  
 
 
-
-
-
-
- 
+# 부서 정보 관리
+1. 부서정보리스트
+	1) sql 부서명과 부서위치를 검색
+	2) vo
+	3) dao interface/mapper처리 - db 등록
+	------------------
+	4) service
+		A02_DeptService.java
+	5) controller
+		A02_DeptController.java
+	6) view단 처리
+		WEB-INF\view\a03_mvc\a02_deptList.jsp
+2. 부서정보 등록
+	1) sql
+	2) vo
+	3)
