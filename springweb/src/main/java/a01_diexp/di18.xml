@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/task
+       http://www.springframework.org/schema/task/spring-task.xsd       
+        http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+      http://www.springframework.org/schema/mvc/spring-mvc.xsd     
+        http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd
+         http://www.springframework.org/schema/websocket
+      http://www.springframework.org/schema/websocket/spring-websocket.xsd
+       http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security.xsd   
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd   
+      ">
+	<bean id="car01" class="a01_diexp.z01_vo.Car" 
+		c:kind="포르쉐" c:cc="4000" c:maxVel="320" />
+	<bean id="car02" class="a01_diexp.z01_vo.Car" 
+		c:kind="그렌저" c:cc="3500" c:maxVel="250" />
+	<bean id="car03" class="a01_diexp.z01_vo.Car" 
+		c:kind="BMW" c:cc="4000" c:maxVel="280" />
+	<bean id="carDr01" class="a01_diexp.z01_vo.CarDriver" 
+		c:name="홍길동" autowire="byName" />
+	
+	<bean id="hp01" class="a01_diexp.z01_vo.HandPhone" 
+		c:pnumber="010-8888-9999" c:company="KT" />
+	<bean id="hp02" class="a01_diexp.z01_vo.HandPhone" 
+		c:pnumber="010-1111-2222" c:company="SKT" />
+	<bean id="hp03" class="a01_diexp.z01_vo.HandPhone" 
+		c:pnumber="010-3333-4444" c:company="U+" />
+	<bean id="huser" class="a01_diexp.z01_vo.HPUser" 
+		c:name="홍길동" autowire="byName" />
+</beans>      
+

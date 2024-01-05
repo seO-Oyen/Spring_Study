@@ -1,0 +1,23 @@
+# 학습 목표 
+- Spring Framework와 MyBatis를 활용하여 웹 애플리케이션을 구축하는 방법을 이해합니다.
+- RESTful API 설계 원칙을 적용하여 백엔드 시스템을 구축합니다.
+- MyBatis를 사용하여 데이터베이스와의 연동을 학습합니다.
+- CRUD (Create, Read, Update, Delete) 작업을 구현하는 방법을 배웁니다.
+
+# 주요 핵심 키워드와 개념
+- Spring Framework : 자바 기반의 엔터프라이즈 애플리케이션 개발을 위한 강력한 프레임워크
+- MyBatis : 자바 객체와 SQL 사이의 자동 매핑 기능을 제공하는 SQL Mapper 프레임워크
+- MVC 패턴 : Model-View-Controller 아키텍처 패턴
+- REST API : 웹 표준을 기반으로 서버와 클라이언트 간의 통신을 정의하는 방법
+- CRUD : 데이터베이스에서 사용하는 기본적인 네 가지 작업 
+		-> 생성 (Create), 읽기 (Read), 갱신 (Update), 삭제 (Delete)
+
+# 생각하고 토론해볼 내용
+- RESTful 웹 서비스의 장점과 단점은 무엇일까요?
+- MyBatis와 JPA(Java Persistence API) 사이의 차이점과 사용 사례는 무엇일까요?
+- MVC 패턴이 웹 애플리케이션 개발에서 중요한 이유는 무엇일까요?
+
+# 간단한 퀴즈
+1) Spring Framework에서 Controller의 주요 역할은 무엇인가요?
+2) MyBatis에서 XML Mapper 파일의 역할은 무엇인가요?
+3) REST API에서 CRUD 작업을 수행하는 HTTP 메서드 네가지는 무엇인가요?

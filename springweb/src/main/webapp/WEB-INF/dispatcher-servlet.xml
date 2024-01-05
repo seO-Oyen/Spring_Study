@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:task="http://www.springframework.org/schema/task" 
+   xmlns:aop="http://www.springframework.org/schema/aop" 
+   xmlns:context="http://www.springframework.org/schema/context"
+   xmlns:mvc="http://www.springframework.org/schema/mvc"
+   xmlns:p="http://www.springframework.org/schema/p"
+   xmlns:c="http://www.springframework.org/schema/c"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:util="http://www.springframework.org/schema/util"
+   xmlns:websocket="http://www.springframework.org/schema/websocket"
+   xmlns:sec="http://www.springframework.org/schema/security"
+   xmlns:tx="http://www.springframework.org/schema/tx" 
+    
+   xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/task
+       http://www.springframework.org/schema/task/spring-task.xsd       
+        http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+      http://www.springframework.org/schema/mvc/spring-mvc.xsd     
+        http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd
+         http://www.springframework.org/schema/websocket
+      http://www.springframework.org/schema/websocket/spring-websocket.xsd
+       http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security.xsd   
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd   
+      ">
+   <!-- 상단은 앞으로 사용할 xml 태그의 형식을 지정하는 부분 
+   	호출할 때, 컨테이너에서 찾을 수 있는 객체의 범위안에 설정이 됨..
+   <bean class="springweb.a01_start.A01_StartController"/>   
+   <bean class="springweb.a01_start.A02_ReStartController"/>   
+   <bean class="springweb.a01_start.A03_ParamObjectModel"/>   
+   <bean class="springweb.z99_home.A1219Controller"/>   
+   <bean class="springweb.a02_mvc.A01_MVC_StartController"/>   
+   <bean class="springweb.a02_mvc.A02_MVC_CheckAudultCtrl"/>
+   -->
+	<context:component-scan base-package="springweb">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+	</context:component-scan>
+	<bean class="d01_dao.PreparedStmtDao" />
+	<!--
+	1. mybatis 접속을 효율적으로 하게 하는 dbcp 객체 설정 처리
+		1) d 연동
+		2) 트랜잭션 처리
+	-->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe" />
+		<property name="username" value="scott" />
+		<property name="password" value="tiger" />
+	</bean>
+	<tx:annotation-driven proxy-target-class="true" />
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- 
+	2. mybatis framwork를 컨테이너에서 사용하기
+		1) 공통 mybatis 설정 xml
+		2) 객체를 자동 생성하게 하는 dao interface 위치 선언
+		
+	# DB 연동 처리 형식
+	1. dataSource(기본 연결 정보 처리 객체)
+	2. transactionManager(트랜잭션  처리 - optional)
+		ref="dataSource" (위 연결 객체 할당)
+	3. sqlSessionFactory(mybatis framework 연결 및 공통 설정 파일 지정)
+		ref="dataSource" (위 연결 객체 할당)
+		configLocation::/resource/mybatis.Spring.xml(공통파일)
+		1) 사용할 vo의 alias명 지정
+			사용할 vo의 alias명 지정
+			사용할 mapper.xml 설정 처리
+			typeAlias alias="emp" type="springweb.z01_vo.Emp"
+			mapper resource="resource/ExpMapper.xml"
+			== XXXMapper.xml
+				mapper namespace="springweb.a02_mvc.a03_dao.A02_Dao"
+				select id="" parameterType="" resultType=""
+					sql(select)
+					== 연동된 dao 인터페이스
+	4. MapperScannerConfigurer:
+		자동 객체 생성 interface dao 패키지 범위 설정
+		1) basePackage : springweb.a02_mvc.a03_dao
+			해당 패키지 안에있는 모든 Dao interface는 실제 객체를 상속해서
+			DB연결을 처리해준다
+		2) 위 내용에서 다른 패키지를 추가할려면 아래 형식으로 처리하면 된다.
+			value="패키지1, 패키지2, ..."
+			,로 구분하여 추가 처리
+		
+	-->
+	<bean id="sqlSessionFactory" 
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation"
+			value="classpath:/resource/mybatis.Spring.xml"></property>
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="springweb.a02_mvc.a03_dao" />
+		                                   
+	</bean>
+	
+</beans>      

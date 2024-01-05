@@ -1,0 +1,166 @@
+# 스프링에서 DB 연결처리
+1. 기본개념
+	스프링 컨테이너에 DB서버와 연결처리해주는 Dao를 할당하여 처리한다.
+	1) Dao연동하는 클래스 작성
+	2) 컨테이너에 등록
+	3) autowiring으로 해당 객체를 controller, service에서 호출하여 처리 
+	
+2. mybatis라는 프레임워크 활용
+	위와 같이 dao를 컨테이너에 등록하듯이, 연결처리의 효율, 연결시 보안처리,
+	데이터베이스 효과적인 로딩, 예외 처리 등 여러가지 효율적인 기능을 포함하고,
+	손쉽게 DB처리를 하는 프레임워크인 mybatis를 사용하여 처리하는 것을 말한다.
+	1) 처리 순서 (환경설정)	
+		- 공통 환경설정 : 컨테이너에 사용하는 framework의 lib객체를 선언하여
+			처리할 수 있게 한다.
+			dbcp(database Connection Pool) 설정
+			공통 mybatis 프레임워크 위 dpbcp와 연동 처리
+			mybatis에서 사용하는 공통 xml 파일 선언
+			각 업무 단위별로 mybatis를 설정해서 sql을 처리하는 mapper 파일 선언
+		- 업무별로 설정 처리 파일 등록
+			sql 작성 확인 (입력/출력할 내용 확인)
+			dto/vo 작성
+			dao 인터페이스 설정(입력값 / 리턴할 메서드 선언)
+				- framework를 통해 자동으로 DB처리하는 실제 객체를 만들어준다.
+			공통 vo/dto 공통 mybatis 설정파일에 등록
+			사용할 sql 처리 mapper 파일 생성 및 설정파일에 등록
+			위 dao 인터페이스와 연동하는 규칙에 따라 mapper.xml 파일 생성
+			service/controller 호출하여 모델 데이터 처리 및 확인
+
+# Mybatis DB연동 연습
+sql
+	select count(*) from emp;
+	사원정보의 데이터 건수 검색
+	결과는 ==> 12
+	=> 프로그램적으로 처리해서 결과를 가져올려면 기능메서드 필요
+	public int getEmpCount();
+	=> 해당 메서드를 통해서 sql의 결과를 프로그램적으로 가져온다
+	service단에서 "사원정보의 수 : " + dao.getEmpCount()
+
+springweb\a02_mvc\a03_dao\A01_Dao.java
+	인터페이스(껍데기만 있으면 ok, 입력값, 리턴값, 메서드명)
+	public int getEmpCount();
+	==> sql의 결과를 담기위한 메서드 선언 (리턴값, 메서드명, 매개변수 유형)
+	select count(*) from emp where deptno = ?
+	public int getEmpByDeptno(int deptno);
+
+resource\ExpMapper.xml
+	<select id="getEmpCount" resultType="int">
+		select count(*) from emp
+	</select>
+	<select id="getEmpbyDeptno" resultType="int" parameterType="int">
+		select count(*) from emp where deptno = #{deptno}
+	</select>
+
+
+A01_Dao.java(인터페이스), ExpMapper.xml(xml)
+=> 내부적으로 실제 dao 파일을 만들어 준다.
+	그래서 service해서 호출해서 사용할 수 있다.
+
+0. 규칙
+	- 1단계
+	XXXmapper.xml		dao인터페이스
+	1) namespace		dao인터페이스명
+	2) id				메서드명
+	3) resultType		리턴값처리
+		resultMap
+	4) parameterType	매개변수
+	
+	- 2단계
+	dao인터페이스
+	@Select("처리할 sql")
+	public 리턴유형 메서드명(매개변수처리);
+	
+1. 리턴값 연습 (XXXMapper.xml,
+		resultType, resultType, resultMap-column, property 다르게 설정)
+	1) 단일 데이터
+		select count(*) from emp
+		
+		public int getCountEmp();
+		<select id="">
+			select count(*) from emp
+		</select>
+	2) 객체 데이터
+		public Emp getEmp();
+		emp : alias로 선언시에는 그 이름으로 아니면 패키지명 포함 객체 선언
+		
+		<select id="getEmp" resultType="emp">
+			SELECT *
+			FROM emp
+			WHERE empno = 7369
+		</select>
+	3) List 데이터 (resultType, resultMap)
+		sql
+		다중의 list가 나오면 단위객체 vo로 만들어 alias 등록, resultType에 설정
+		dao 설정
+		
+		
+2. 매개변수 연습 (parameter Type
+	1) 단일 데이터
+		숫자
+		문자열
+	2) Map(key/value)
+	3) VO
+	4) List
+3. 리턴값/매개변수 처리연습
+	1) 리턴값/매개변수가 동시에 있는 형식 
+	
+# mybatis 환경 설정
+1. 파일
+	1) dispatcher-servlet.xml (컨테이너 설정)
+		연결객체
+		트랜잭션설정 (optional)
+		공통 마이바티즈 설정파일 지정
+		dao 인터페이스 패키지 위치 지정
+	2) java\resource\mybatis.Spring.xml (마이바티즈 공통 설정)
+		패키지명이 긴 객체를 alias(별칭)으로 간단하게 설정 mapper 파일에서 활용
+		추가할 XXXMapper.xml을 선언
+	3) java\resource\XXXMapper.xml (업무단위별 mapper)
+		최상위 선언 : namespace == dao패키지 + 인터페이스명
+		각 요소 (select, insert, update, delete)에 속성
+			id == 메서드명 (dao)
+			resultType/resultMap == 리턴유형 (dao)
+			parameterType == 메서드의 매개변수 (dao)
+			#{ 프로퍼티/변수명 } : preparedstatement
+			${ 문자열 변수 } : 동적 query
+			
+			ognl(jstl의 형식 차용) : <if test="ename != null">
+				조건문 반복문에 의해 동적 query 생성 
+			
+	4) java\springweb\a02_mvc\a03_dao\A01_Dao.java (업무단위별 dao 인터페이스)
+	5) service단 : 위 dao를 mapper/마이바티즈에 의해 만들어진 인터페이스를
+		상속받은 하위 객체들 활용/호출하여 처리
+		
+# 주로 발생하는 error 유형
+0. 객체를 인식 못하는 경우 java는 만들어져 있으나 톰캣에서 사용할 때
+	class가 연관관계자 처리가 안되어 객체 인식 못하는 경우 -> clean 재시작
+	또는 상단메뉴 project / clean, build automatically 체크여부 확인
+1. oraXXXX ==> sql 문제(mapper.xml에 있는 문법 문제 확인)
+2. sqlBadGram ==> sql 문제/;-문제
+3. dao bean null ==> dao 패키지 선언 (설정 확인)
+	
+# DB 연결시 순서
+1. sql 작성
+	입력 :
+	출력 :
+	확인 type, 다중데이터 여부 확인
+2. VO 객체 / 일반 type
+	1) 입력할 때, 사용할 때
+	2) 출력(리턴)할 때, 사용할 때
+3. dao interface 선언
+	1) 입력/출력/기능메서드를 매개변수/리턴값/메서드명
+4. mybatis.Spring.xml에
+	1) alias VO 객체 등록
+	2) 추가할 mapper.xml이 있으면 등록
+5. XXXmapper.xml
+	1) 위 등록 alias와 mapper.xml을 활용하여
+	2) namespace명 : 인터페이스명
+	3) id명 : 메서드명
+	4) resultType : 리턴타입유형(alias 활용)
+	5) parameterType : 매개변수 타입유형
+	6) sql 처리 및 매개변수활용을 위한 선언
+		#{ 변수명 }, #{ property } 선언
+6. service단에서 dao 호출 및 해당 매서드 확인 
+	@Autowired
+	private @@@Dao. dao
+	
+	dao.XXXX() 메서드 호출 확인

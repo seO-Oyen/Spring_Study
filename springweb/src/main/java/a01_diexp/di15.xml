@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:task="http://www.springframework.org/schema/task" 
+   xmlns:aop="http://www.springframework.org/schema/aop" 
+   xmlns:context="http://www.springframework.org/schema/context"
+   xmlns:mvc="http://www.springframework.org/schema/mvc"
+   xmlns:p="http://www.springframework.org/schema/p"
+   xmlns:c="http://www.springframework.org/schema/c"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:util="http://www.springframework.org/schema/util"
+   xmlns:websocket="http://www.springframework.org/schema/websocket"
+   xmlns:sec="http://www.springframework.org/schema/security"
+   xmlns:tx="http://www.springframework.org/schema/tx" 
+    
+   xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/task
+       http://www.springframework.org/schema/task/spring-task.xsd       
+        http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+      http://www.springframework.org/schema/mvc/spring-mvc.xsd     
+        http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd
+         http://www.springframework.org/schema/websocket
+      http://www.springframework.org/schema/websocket/spring-websocket.xsd
+       http://www.springframework.org/schema/security
+       http://www.springframework.org/schema/security/spring-security.xsd   
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd   
+      ">
+<!-- 
+# 컨테이너에 사용되는 다양한 구조체 처리방법
+1. Set : 중복불가
+	<set>
+		<value
+		<value
+		<value
+2. Properties : key/value 문자열
+	<props>
+		<prop key="키">값
+		<prop key="키">값
+		<prop key="키">값
+3. Map : key/value 객체
+	<map>
+		<entry key="키" value="값"/>
+ps) 위와 같은 구조체들은 특정한 클래스에 포함되어 선언되어
+객체와 객체 관계 속 또는 특정 객체 안에서 활용되고 있다.
+4. 처리 순서
+	1) 위 내용을 포함하는 class 선언 후, 기능 메서드에 의해 구조체 할당
+	2) xml 컨테이너에 의해 위 선언방식으로 할당
+	3) main()에서 메모리 할당 내용 확인
+
+ -->
+ 	<bean id="sensor01" class="a01_diexp.z01_vo.Sensor">
+ 		<property name="agent">
+ 			<set>
+ 				<value>주식매매</value>
+ 				<value>자산관리</value>
+ 				<value>주식매매</value>
+ 				<value>자산관리</value>
+ 				<value>보험관리</value>
+ 				<value>보험관리</value>
+ 				<value>주식매매</value>
+ 			</set>
+ 		</property>
+ 		
+ 		<property name="addInfo">
+ 			<props>
+	 			<prop key="사과">3000</prop>
+	 			<prop key="바나나">4000</prop>
+	 			<prop key="사과">3500</prop>
+	 			<prop key="바나나">3200</prop>
+	 			<prop key="오렌지">2200</prop>
+ 			</props>
+ 		</property>
+ 	</bean>
+ 	
+ 	<bean id="gamer" class="a01_diexp.z01_vo.Gamer">
+ 	<property name="beadKinds">
+ 		<set>
+ 			<value>빨간구슬</value>
+ 			<value>빨간구슬</value>
+ 			<value>초록구슬</value>
+ 			<value>파란구슬</value>
+ 			<value>파란구슬</value>
+ 			<value>파란구슬</value>
+ 			<value>노란구슬</value>
+ 		</set>
+ 	</property>
+ 	<property name="beadsCnts">
+ 		<props>
+ 			<prop key="빨간구슬">1</prop>
+ 			<prop key="빨간구슬">2</prop>
+ 			<prop key="초록구슬">1</prop>
+ 			<prop key="파란구슬">3</prop>
+ 			<prop key="노란구슬">4</prop>
+ 		</props>
+ 	</property>
+ 	
+ 	</bean>
+ 
+</beans>      
+

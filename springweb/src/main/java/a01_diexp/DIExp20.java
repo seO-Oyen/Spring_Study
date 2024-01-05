@@ -1,0 +1,24 @@
+package a01_diexp;
+
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
+
+public class DIExp20 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		// 1. 컨테이너 경로
+		String path="a01_diexp\\di20.xml";
+		AbstractApplicationContext ctx = 
+				new GenericXmlApplicationContext(path);
+		
+		// 2. DL(Dependency Lookup) 객체를 찾는 처리
+		Object obj = ctx.getBean("obj", Object.class);
+		System.out.println("컨테이너의 객체 호출:"+obj);
+		
+		// 3. 자원해제 
+		ctx.close();
+		System.out.println("종료@!!");
+	}
+
+}

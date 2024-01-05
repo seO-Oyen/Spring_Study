@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias alias="emp" type="springweb.z01_vo.Emp" />
+		<typeAlias alias="empDto" type="springweb.z01_vo.EmpDTO" />
+		<typeAlias alias="location" type="springweb.z01_vo.Location" />
+		<typeAlias alias="job" type="springweb.z01_vo.Job" />
+		<typeAlias alias="employee" type="springweb.z01_vo.Employee" />
+		<typeAlias alias="depart" type="springweb.z01_vo.Depart" />
+		<typeAlias alias="dept" type="springweb.z01_vo.Dept" />
+		
+		<!-- 0102 과제 -->
+		<typeAlias alias="member" type="springweb.z01_vo.Member" />
+		
+	</typeAliases>
+	<mappers>
+		<mapper resource="resource/ExpMapper.xml"/>
+		<mapper resource="resource/Exp02Mapper.xml"/>
+		<mapper resource="resource/Z0102Mapper.xml"/>
+	</mappers>
+
+	<!--
+	typeAlias alias="emp"
+	mapper resource="resource/ExpMapper.xml"
+	-->
+
+</configuration>
