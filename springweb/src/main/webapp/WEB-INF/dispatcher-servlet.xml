@@ -54,6 +54,7 @@
          2) 트랜잭션 처리
          oracle.jdbc.driver.OracleDriver  jdbc:oracle:thin:@localhost:1521:xe  scott  tiger 이거 내 원격쓸꺼면 바꿔야됨;;
        -->
+       <context:property-placeholder location="classpath:resource/a01_conf.txt"/>
        <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> <!-- 자원해제하는 메서드 선언 -->
              <property name="driverClassName" value="${db.driver}"/>
              <property name="url" value="${db.host}"/>

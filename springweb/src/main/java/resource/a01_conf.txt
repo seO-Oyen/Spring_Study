@@ -1,8 +1,8 @@
 # 업로드 할 파일 경로
-file.upload = C:\\b02_javaexp\\workspace\\git\\Spring_Study\\springweb\\src\\main\\webapp\\z02_upload\\
+file.upload=C:\\b02_javaexp\\workspace\\git\\Spring_Study\\springweb\\src\\main\\webapp\\z02_upload\\
 
 # DB 서버 정보
-db.host=
-db.port=
-db.user=
-db.pwd
+db.driver = oracle.jdbc.driver.OracleDriver
+db.host=jdbc:oracle:thin:@localhost:1521:xe
+db.user=scott
+db.pwd=tiger
