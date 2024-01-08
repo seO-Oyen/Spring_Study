@@ -1,0 +1,31 @@
+# 파일업로드 다운로드
+1. 기능
+	1) 웹 화면에서 파일을 선택해서 브라우저 화면에서 등록을 하면
+		서버로 전송하여 웹서버에 특정한 위치에 파일이 업로드 처리 된다.
+	2) 특정한 파일을 브라우저 화면에서 확인하면 클릭시, 서버에 있는 파일이
+		클라이언트(브라우저화면)에서 다운로드 처리가 된다.
+	주의) 원격에 있는 서버의 경로에 업로드
+		클라이언트 서버
+			==> 특정한 경로
+			<==
+		수업중에는 클라이언트/서버를 같이 쓰기 때문에 프로젝트 설정시 위 개념을
+		이해하지 않고 설정하는 경우가 많음
+2. 처리 순서
+	1) 컨테이너에 파일 업로드 다운로드 선언
+		- 업로드
+	2) 기본화면 화면 호출 controller/view 선언
+	3) view단(jsp)
+		<form enctype="multipartform-data">
+			<input type="file" name="report">
+	4) controller
+		public String upload(@RequestParam("report")
+			MultipartFile report)
+	5) service 단
+		MultipartFile을 File 객체로 변환하여 특정 위치에 저장
+		report.transferTo(new File(파일경로/파일명));
+3. 위 내용을 기반으로
+	0) 컨테이너에 설정으로 특정한 업로드할 특정한 파일 위치 지정
+	1) 다른 정보와 함께 파일 업로드 ==> VO(private MultipartFile)
+	2) 다른 정보와 함께 다중파일 업로드 ==> VO(private MultipartFile[])
+	3) DB정보 입력 처리
+		업로드하면서 파일정보를 DB에 insert 처리
