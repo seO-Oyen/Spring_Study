@@ -16,10 +16,25 @@
 	2) 기본화면 화면 호출 controller/view 선언
 	3) view단(jsp)
 		<form enctype="multipartform-data">
-			<input type="file" name="report">
+			<input type="file" name="report" multiple="multiple">
+			<input type="text" name="name">
+			<input type="text" name="age">
+		==> ?age=15&name=홍길동&report=스트림binary형식전달
 	4) controller
-		public String upload(@RequestParam("report")
-			MultipartFile report)
+		public String upload(
+			@RequestParam("age") int age,
+			@RequestParam("name") String name,
+			@RequestParam("report") MultipartFile[] report)
+			
+		class Person {
+			private int age;
+			private String name;
+			privat MulipartFile[] report;
+			// set/getXXX() 메서드 처리
+		}
+		public String upload(Person p01) 요청값 + 모델데이터
+		화면에서 요청값과 모델데이터를 같이 처리하기에 아래와 같이 사용 가능
+			${person.name} ${person.age}
 	5) service 단
 		MultipartFile을 File 객체로 변환하여 특정 위치에 저장
 		report.transferTo(new File(파일경로/파일명));
