@@ -61,13 +61,13 @@ public class A01_EmpService {
 			System.out.println(job.getMax_salary());
 		}*/
 		
-		/*System.out.println("# resultMap 활용 예제 #");
+		System.out.println("# resultMap 활용 예제 #");
 		for (Employee empl : dao.getEmployee("A", "")) {
 			System.out.print(empl.getNo() + "\t");
 			System.out.print(empl.getName() + "\t");
 			System.out.print(empl.getSalary() + "\t");
 			System.out.println(empl.getGrade());
-		}*/
+		}
 		
 		/*System.out.println("# depart #");
 		for (Depart depart : dao.getDeparts("", "")) {
