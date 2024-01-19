@@ -14,6 +14,22 @@
 	- DB 테이블 구정 : fullcalendar에 필요한 이벤트 데이터를 저장한 테이블을 생성합니다.
 		필드 : id, title, start, end, backgroundcolor, textcolor,
 			allday, url, writer, content
+		
+		create table calendar(
+			id number primary key,
+			title varchar2(100),
+			start1 date,
+			end1 date,
+			writer varchar2(50),
+			content varchar2(2000),
+			backgroundcolor varchar2(7),
+			textcolor varchar2(7),
+			allday number(1),
+			url varchar2(500)
+		);
+		create sequence cal_seq;
+			
+			
 	- 주요 sql작성 : 이벤트의 리스트, 등록, 수정, 삭제에 필요한 sql을 작성합니다.
 	- vo/dto클래스 선언 : 데이터 전송 객체 및 리스트를ㄹ 위하여 선언하여, 데이터베이스와의 통신에 사용합니다.
 	- dao/mapper 선언 : 데이터 접근 객체(dao), mybatis mapper를 정의하여 데이터베이스 연동을 처리합니다.
@@ -35,4 +51,84 @@
 	2) 요청값 + 모델데이터 처리
 	3) DB연동 + 요청값 + 모델 데이터(json)
 	4) 실무 화면에서 ajax 처리
+
+# 전체 일정 데이터 처리
+1. json 데이터에 의한 DB 구조설정/테이블 생성/sequence생성
+2. 기본 sql문 작성
+3. VO 작성(DB select 문에 의해 조회된 내용을 VO객체로 할당 후 다시 json 데이터로
+	로딩하여 화면단에 전달될 수 있는 구조로 확인)
+4. dao/mapper/공통mybatis 작성 
+5. service
+6. controller단
+	1) json데이터를 로딩하기 위한 pageJsonReport View로 처리
+	2) service단에서 받은 데이터 model로 설정
+7. resource 메서드를 통해서 ajax를 통해서 만들어 놓은 DB연동 처리를
+	통한 json데이터 호출 처리 (초기 일정 처리 완료)
+
+# 속성 변경하기
+1. 초기 로딩하는 기준일 : 오늘로 변경 처리
+	initialDate : ISO형식으로 오늘 날짜로 처리
+	var toDay : new Date();
+	var toDayISO = toDay.toISOString().split("T")[0] // 오늘날짜 추출
+	initialDate : toDateISO,
+
+# 일정 등록 처리
+1. select에 이벤트 핸들러에서 처리되는 내장된 속성값이 어떤게 있는지 확인한다.
+2. 입력할 정보를 정리하고 sql을 만든다
+	INSERT INTO calendar values(
+		cal_seq.nextval,
+		#{title},
+		to_date(#{start}, 'YYYY-MM-DD"T"HH24:MI:SS"+09:00"'),
+		to_date(#{end}, 'YYYY-MM-DD"T"HH24:MI:SS"+09:00"'),
+		#{writer},
+		#{content},
+		#{backgroundColor},
+		#{textColor},
+		#{allDay},
+		#{url}
+	);
 	
+	to_date(#{start}, 'YYYY-MM-DDHH24:MI:SS')
+	=> calendar api에서 날짜처리 형식
+		js Date 객체로 ISO형식으로 처리된 YYYY-MM-DDHH24:MI:SS+09:00 으로 사용된다.
+	=> 데이터베이스는 Date속성으로 처리되기 때문에 입력/수정, 조회할때, 위 형식으로
+		변경처리 하여야 한다.
+
+3. DB처리
+	int insertCalendar(Calendar ins);
+	
+	http://localhost:7080/springweb/insertCalendar.do?title=세번째입력&start=2024-01-10T00:00:00+09:00&end=2024-01-11T00:00:00+09:00&writer=마길동&content=일정등록연습&backgroundColor=#ffff00&textColor=#333300&allDay=true&url=http://www.naver.com
+	
+4. 화면단 처리
+	1) 모달창으로 입력 form 생성
+
+# 등록된 일정 확인 및 수정/삭제처리
+
+# 수정처리 형시겡 따른 이벤트 처리
+1. 상세화면에서 수정
+2. 스크롤로 일정 변경(일정 이동, 일정시간 변경 처리 등)
+
+
+# 전체 구조
+controller
+	A07_FullCalendarController.java
+		calendar.do : 화면폼 (JSP)
+		calList.do : (조회)리스트(JSON)
+		insertCalendar.do : 등록처리(등록 후 msg, 전체 데이터 JSON)
+
+DB(조회/등록)
+	A07_CalendarDao.java//CalendarMapper.xml
+	List<Calendar> getCalList();
+	int insertCalendar(Calendar ins);
+	
+view
+	a12_fullcalendar.jsp
+		초기데이터 로딩
+			calendar.do를 통해 초기화면 jsp를 호출하면서
+			resource 속성으로 함수를 호출하면 전체 DB에 있는 일정 json데이터를
+			ajax에 의해 가져와서(calList.do)
+			fullcalendar api에 할당 처리한다.
+		모달 화면
+			등록처리
+			select() 이벤트에 의해서 기본 form이 로딩되어 처리할 수 있게 해놓고
+			입력이 되고 ajax로 등록이 form에 입력된 데이터를 insertCalendar.do로 controller단을 호출하여 입력을 하게 된다.

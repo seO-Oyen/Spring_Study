@@ -10,6 +10,7 @@
 		<typeAlias alias="employee" type="springweb.z01_vo.Employee" />
 		<typeAlias alias="depart" type="springweb.z01_vo.Depart" />
 		<typeAlias alias="dept" type="springweb.z01_vo.Dept" />
+		<typeAlias alias="calendar" type="springweb.z01_vo.Calendar" />
 		
 		<!-- 0102 과제 -->
 		<typeAlias alias="member" type="springweb.z01_vo.Member" />
@@ -20,6 +21,7 @@
 		<mapper resource="resource/Exp02Mapper.xml"/>
 		<mapper resource="resource/DeptMapper.xml"/>
 		<mapper resource="resource/Z0102Mapper.xml"/>
+		<mapper resource="resource/CalendarMapper.xml"/>
 	</mappers>
 
 	<!--
