@@ -1,0 +1,148 @@
+# 스프링에서 웹 소켓을 통한 실시간 채팅
+1. 스프링에서 웹서버를 처리하여 실시간 채팅하는 경우는 웹프로그램에서 다양한 경우
+	사용되고 있다. 온라인 물품구매 사이트에서 관리자에게 실시간 문의하는 경우,
+	사내 업무처리 프로그램에서 각 사원들 간의 업무 회의 및 1:1 채팅등 여러 경우에
+	활용되고 있다.
+	
+2. 주요기능
+	1) 사용자간 실시간 채팅
+	2) 채팅방 입장 및 퇴장 기능 
+	3) 채팅 메시지 전송 및 수신
+
+3. 개발 순서
+	1) 웹소켓 설정
+		스프링 컨테이너에 웹소켓을 설정합니다. 이를 위한 웹 소켓에 대한 객체 설정
+	2) 백엔드 개발
+		ChatHandler 클래스를 생성하여 웹소켓 통신을 관리합니다. 이 클래스는 클라이언트의
+		연결, 메시지 전송, 연결 종료 이벤트를 처리합니다.
+		사용자의 웹 소켓 세션을 전역변수로 관리하여 실시간 통신을 가능하게 처리합니다.
+	3) 프런트 엔드 개발
+		- 채팅 ui를 구성합니다. (사용자 입력, 입장/퇴장 버튼, 메시지 창 등)
+		- javascript를 사용하여 웹 소켓 객체를 생성하고, 서버로부터 메시지를 수신할 수
+			있도록 합니다.
+		- 메세지 전송 및 이벤트를 처리합니다.
+
+# 채팅 사용자 관리
+1. 기능
+	등록된 사용자 관리 및 중복 체크
+	현재 접속한 사용자 목록 표시
+	
+2. 개발 순서
+	1) 서버단 처리
+		- 접속한 사용자의 ID와 웹소켓 세션 ID를 매핑하여 관리합니다.
+		- 접속 종료시 해당 사용자를 목록에서 제거합니다.
+		- 현재 접속 중인 사용자의 아이디 목록을 반환하는 메서드를 구현합니다.
+	2) 컨트롤러 구현
+		- ajax요청을 처리하여 현재 접속중인 사용자 목록을 반환합니다.
+	3) 프런트엔트 처리
+		- 접속자 목록을 화면에 표시합니다.
+		- 페이지 초기 로드시 및 주기적으로 ajax를 통해 서버에 현재 접속자
+			목록을 가져옵니다.
+
+# 현재 채팅 사용자 처리
+1. 기능
+	로딩시 현재 접속자 확인
+	중복된 이름의 접속 방지
+
+2. 구현 방법
+	1) 핸들러 (ChatHandler.java)
+		채팅자 정보를 저장하는 맵 필드 선언(Map<String, String> ids)
+		메시지 수신시, 접속자 id를 맵에 추가하고 접속 종료시 삭제합니다.
+		현재 접속자 id목록을 반환하는 메서드 구현
+	2) 프런트 엔드 (a12_chatting.jsp)
+		접속자 목록을 화면에 표시합니다.
+	3) 컨트롤러 (A09_ChattingController.java)
+		getChatMem.do : 엔트 포인트를 통해 핸들러에서 현재 접속자 목록을
+			가져와서 ajax요청에 응답합니다.
+
+# 파일 구조
+1. 컨테이너 설정(distpatcher-sevlet.xml)
+	ChatHandler를 특정한 url방식에 의해서 client와 접속할 수 있게 설정한다.
+2. push방식을 통신을 처리해주는 핸들러 클래스 (ChatHanddler)
+3. 초기화면 및 화면단 호출(A08_ChattingController)
+	1) view단 로딩 처리하는 controller
+4. 채팅 처리되는 화면(a13_chatting.jsp)
+	1) 컨테이너에서 지정한 핸들러 클래스와 접속방법을 js에 의해서 처리하여
+	2) 각 기능별 메서드로 접속/메시지 전달/메시지 받기/ 접속 종료 처리를 한다.
+
+# 핸들러(backend)와 화면단(frontend) 위 화면 중심으로 연관관계 부분
+1. ChatHandler(핸들러 클래스)
+	각 client에서 온 메시지를 client별로 소켓 서버에 등록시켜 놓았다가
+	접속한 모든 client에게 전달 처리한다.
+	초기 접속시, client를 등록 처리
+	메시지가 올 때 등록된 client들에게 반복문을 통해 메시지 전달
+	접속을 종료할 때, 등록된 client에서 제외 처리
+	에러나 예외 발생 시 처리 
+	
+	1) 연동
+		afterConnectionEstablished
+		접속 client를 누적처리
+	2) 메시지 보내기
+		handleTextMessage
+		반복문에 의해 특정 client가 보낸 메시지들을
+		등록된 모든 client에게 전달처리
+	3) 종료
+		afterConnectionClosed
+		접속된 client를 제외 처리
+	4) 예외처리
+		handleTransportErro
+		
+
+2. a13_chatting.jsp(화면 처리)
+	0) 초기 서버에 생성된 소켓 서버에 접속을 위한 client객체 생성
+		<websocket:mapping handler="chatHandler"
+			path="/chat-ws.do" /> : 컨테이너에 선언된 내용
+			wsocket = new WebSocket(
+				"ws:localhost:7080/${path}/chat-ws.do"
+			)
+	1) 연동
+		서버 : afterConnectionEstablished() 메서드와 연동
+			서버에서 접속된 클라이언트를 map으로 아이디와 소켓 세션을 key/value 형식으로
+			저장처리 (users)
+		클라이언트 : wsocket.onopen
+	2) 메시지 보내기
+		클라이언트 : wsocket.send(idVal + " : 접속하셨습니다!")
+		서버 : 보낸 메시지 받기
+			handleTextMessage(WebSocketSession session, TextMessage message)
+			WebSocketSession session : 보내는 클라이언트 세션
+			TextMessage message : 보내는 클라이언트의 메시지
+			
+			등록된 각 클라이언트 세션에 전송 처리
+			for (WebSocketSession ws : users.values()) {
+				System.out.println(ws.getId() + "에게 메시지 발송");
+				ws.sendMessage(message);
+			}
+	3) 메시지 받기
+		클라이언트 : wsocket.onmessage = function(evt) {
+			evt.data : 서버가 전달하는 메시지를 push방식으로 받게 된다.
+		적절한 화면을 출력 처리
+			1) 메시지 내용 : 전송한 아이디 : 전달하는 메시지
+			2) 클라이언트가 보낸 메시지와 다른 클라이언트가 보낸 메시지를 구분하여
+				왼쪽/오른쪽 정렬 처리
+			3) 데이터를 누적이 될때 화면에 메시지 내용이 계속 보이게 
+				자동 scrolling처리
+		
+	4) 종료
+		client단 처리 : wsocket.close()
+			창닫기 처리
+		서버단 : afterConnexctionClosed(WebSocketSession session, 
+			등록된 session아이디 제외 처리
+		서버에 session을 종료 처리한다.
+
+# 처리 순서
+1. 화면 form UI만들기
+2. chathandler 기능별 메서드 처리
+3. 화면 form에서 이벤트별로 chathandler 연동 메서드 선언 처리
+
+# 실무환경 적용시 처리할 내용
+1. 고정 아이피/도메인 웹 서버 내용 설정
+2. 위 설정된 고정 아이디 기준으로 
+	wsocket = new WebSocket(
+				"ws:localhost:7080/${path}/chat-ws.do"
+			)
+	localhost ==> XXX.XXX.XX.XX (고정 아이피 지정)
+
+# 채팅내용 자동 scrolling 처리
+1. 사이즈가 변경될 때, 이벤트 처리
+2. #chatMessageArea 크기를 일단 가져와서 메시지가 보내질 때마다 특정한 div의
+	scrollTop 내용으로 처리한다.

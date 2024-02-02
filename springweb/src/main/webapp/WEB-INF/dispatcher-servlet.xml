@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-   xmlns:task="http://www.springframework.org/schema/task" 
-   xmlns:aop="http://www.springframework.org/schema/aop" 
-   xmlns:context="http://www.springframework.org/schema/context"
-   xmlns:mvc="http://www.springframework.org/schema/mvc"
-   xmlns:p="http://www.springframework.org/schema/p"
-   xmlns:c="http://www.springframework.org/schema/c"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xmlns:util="http://www.springframework.org/schema/util"
-   xmlns:websocket="http://www.springframework.org/schema/websocket"
-   xmlns:sec="http://www.springframework.org/schema/security"
-   xmlns:tx="http://www.springframework.org/schema/tx" 
-    
-   xsi:schemaLocation="http://www.springframework.org/schema/beans
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/task
        http://www.springframework.org/schema/task/spring-task.xsd       
@@ -31,156 +31,130 @@
        http://www.springframework.org/schema/tx
        http://www.springframework.org/schema/tx/spring-tx.xsd   
       ">
-      <!-- 상단은 앞으로 xml 태그의 형식을 지정하는 부분
-      호출할 때, 컨테이너에서 찾을 수 있는 객체의 범위안에 설정이 됨..
-      <bean class="springweb.a01_start.A01_StartController"/>
-      <bean class="springweb.a01_start.A02_RestartController"/>
-      <bean class="springweb.a01_start.A03_ParamObjectModel"/>
-      <bean class="springweb.z01_homework.A1218"/>
-      <bean class="springweb.z01_homework.A1219"/>
-      <bean class="springweb.a02_mvc.A01_MVC_StartController"/>
-      <bean class="springweb.a02_mvc.A02_MVC_CheckAdultCtrl"/>
-       -->
-      
-      <context:component-scan base-package="springweb">
-         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
-         <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
-         <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
-      </context:component-scan>
-      <bean class="d01_dao.PreparedStmtDao"/>
-      <!-- 
-      1. mybatis 접속을 효율적으로 하게 하는 dbcp 객체 설정 처리..
-         1) db연동
-         2) 트랜잭션 처리
-         oracle.jdbc.driver.OracleDriver  jdbc:oracle:thin:@localhost:1521:xe  scott  tiger 이거 내 원격쓸꺼면 바꿔야됨;;
-       -->
-       <context:property-placeholder location="classpath:resource/a01_conf.txt"/>
-       <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> <!-- 자원해제하는 메서드 선언 -->
-             <property name="driverClassName" value="${db.driver}"/>
-             <property name="url" value="${db.host}"/>
-             <property name="username" value="${db.user}"/>
-             <property name="password" value="${db.pwd}"/>
-       </bean>
-       
-      <tx:annotation-driven proxy-target-class="true"/>
-      <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-            <property name="dataSource" ref="dataSource"/>   
-      </bean>
-      <!-- 
-      2. mybatis framework를 컨테이너에서 사용하기..
-         1) 공통 mybatis 설정 xml
-         2) 객체를 자동생성 하게 하는 dao interface 위치 선언. 
-         
-      # DB 연동 처리 형식
-      1. dataSource(기본 연결 정보 처리 객체)
-      
-      2. transactionManager(트랜잭션 처리 - optional)
-      [트렌젝션? 
-      트랜잭션(Transaction 이하 트랜잭션)이란, 데이터베이스의 상태를 변화시키기 해서 수행하는 작업의 단위를 뜻한다.
-      간단하게 말해서 아래의 질의어(SQL)를 이용하여 데이터베이스를 접근 하는 것을 의미한다.]
-         ref="dataSource" (위 연결 객체 할당)
-         
-      3. sqlSesscionFactory(mybatis framework 연결 및 공통 설정 파일 지정)
-      [SqlSessionFactory는 데이터베이스와의 연결과 SQL의 실행에 대한 모든 것을 가진 가장 중요한 객체다.
-       이 객체가 DataSource를 참조하여 MyBatis와 Mysql 서버를 연동시켜준다]
-      
-         ref="dataSource" (위 연결 객체 할당)
-         configLocation::/resource/mybatis.Spring.xml(공통파일)
-         == 사용할 vo의 alias명 지정
-            사용할 mapper.xml 설정 처리..
-            typeAlias alias="emp" type="springweb.z01_vo.Emp"
-            mapper source="resource/ExpMapper.xml"
-            == XXXMapper.xml
-            mapper namespace="springwep.a02_mvc.a03_dao.A01_Dao"
-            <select id="" parameterType="" resultType="">
-               ==> 활용할 sql
-            </select>
-            == 연동된 dao 인터페이스
-                  
-      4. MapperScannerConfigurce : 
-         자동 객체생성 interface dao 패키지 범위 설정
-         1) basePackage : springweb.a02_mvc.a03_dao
-         해당 패키지 안에 있는 모든 Dao interface는 실제 객체를 상속해서 DB연결 처리해준다..
-         
-         2) 위 내용에서 다른 패키지를 추가하려면 아래 형식으로 처리하면 된다. 
-            value="패키지1, 패키지2,..."
-            ,로 구분하여 추가 처리...
-            
-       -->
-       <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-          <property name="dataSource" ref="dataSource"/>
-          <property name="configLocation" value="classpath:/resource/mybatis.Spring.xml"/>
-       </bean>
-       
-       <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-          <property name="basePackage" value="springweb.a02_mvc.a03_dao"/>
-       </bean>
-       
-       <!-- view 설정 -->
-       <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-      <property name="order" value="1"/>
-   </bean> 
-   
-   <bean id="btnViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
-      <property name="order" value="0"/>
-   </bean>
-   <bean id="pageJsonReport" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
-      <property name="contentType" value="text/html;charset=utf-8"/>
-   </bean>
-       
-       <!-- 파일 업로드뷰 -->
-       <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
-       
-       <!-- 메일 발송 서버 접속 객체 선언 -->
-       <!--
-       메일발송 서버의 한계
-       1. 발신자 : 지정된 메일 계정 (등록한 메일주소)
-       -->
-       <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-       		<property name="host" value="smtp.gmail.com" />
-       		<property name="port" value="587" />
-       		<property name="username" value="kky77209@gmail.com" />
-       		<property name="password" value="dhaz kadm uphv mzaa" />
-       		<property name="javaMailProperties">
-       			<props>
-       				<prop key="mail.smtp.starttls.enable">true</prop>
-       				<!-- 
-       				메일 서버와의 연결에 STARTTLS를 사용하여 보안을 강화합니다.
-       				STARTTLS는 메일서버와 클라이언트간의 통신을 암호화하는데 사용되며,
-       				특히 공개 네트워크에서 데이터 보호에 중요하다.
-       				-->
-       				<prop key="mail.smtp.auth">true</prop>
-       				<!--
-       				이 값이 true로 설정되면, smtp(메일 발송서버)가 사용자 인증을 요구함을 의미합니다.
-       				이는 메일 발송을 위해 사용자가 이름과 비밀번호를 제공해야 함을 나타냅니다
-       				-->
-       				<prop key="mail.transport.protocol">smtp</prop>
-       				<!--
-       				이 속성은 메일 발송에 사용되는 프로토콜(통신규약)을 정의합니다.
-       				여기서는 smtp로 설정되어 있는 SMTP(Simple Mail Transfer Protocol)를 사용하여 메일을 발송하게 됩니다.
-       				-->
-       				<prop key="mail.debug">true</prop>
-       				<!--
-       				이 속성을 true로 설정하면 메일 발송 과정에서의 디버깅 정보가 출력됩니다.
-       				이는 문제 해결시 유용하게 사용할 수 있습니다.
-       				-->
-       				<prop key="mail.smtp.ssl.true">smtp.gmail.com</prop>
-       				<!--
-       				여기서 stmp.gmail.com으로 설정되어 있는 것을 SMTP서버의 주소를
-       				신뢰할 수 있는 호스트로 지정한다는 의미입니다. ssl/tls연결에서 중요한 보안설정입니다
-       				-->
-       				<prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
-       				<!--
-       				이 속성은 사용한 ssl/tls프로토콜의 버전을 지정합니다.
-       				TLSv1.2는 현재 널리 사용되고 보안이 강화된 프로토콜 버전입니다.
-       				
-       				# 이러한 설정들은 메일 발송의 보안과 안전성을 강화하고 SMTP 서버와의 통신을 제어하는 데 중요합니다. 
-       				특히 mail.smtp.ssl.trust와 mail.smtp.ssl.protocols같은 속성들은 보안에 중점을 둔 메일 발송
-       				환경을 구축하는데 필수적입니다. 또한, mail.debug 속성은 개발 및 테스트 단계에서 유용하게 사용될 수 있습니다.
-       				
-       				-->
-       			</props>
-       		</property>
-       		
-       </bean>
+	<!-- 상단은 앞으로 xml 태그의 형식을 지정하는 부분 호출할 때, 컨테이너에서 찾을 수 있는 객체의 범위안에 설정이 됨.. 
+		<bean class="springweb.a01_start.A01_StartController"/> <bean class="springweb.a01_start.A02_RestartController"/> 
+		<bean class="springweb.a01_start.A03_ParamObjectModel"/> <bean class="springweb.z01_homework.A1218"/> 
+		<bean class="springweb.z01_homework.A1219"/> <bean class="springweb.a02_mvc.A01_MVC_StartController"/> 
+		<bean class="springweb.a02_mvc.A02_MVC_CheckAdultCtrl"/> -->
+
+	<context:component-scan base-package="springweb">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Service" />
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Repository" />
+	</context:component-scan>
+
+	<!--
+	# 웹 소켓 통신을 위한 선언
+	1. java로 핸들러 클래스가 처리하게 선언
+	2. java 핸들러 클래스 선언 및 client에서 호출하는 url 지정
+	-->
+	<mvc:default-servlet-handler />
+	<websocket:handlers>
+		<websocket:mapping handler="chatHandler"
+			path="/chat-ws.do" />
+	</websocket:handlers>
+
+
+
+	<bean class="d01_dao.PreparedStmtDao" />
+	<!-- 1. mybatis 접속을 효율적으로 하게 하는 dbcp 객체 설정 처리.. 1) db연동 2) 트랜잭션 처리 oracle.jdbc.driver.OracleDriver 
+		jdbc:oracle:thin:@localhost:1521:xe scott tiger 이거 내 원격쓸꺼면 바꿔야됨;; -->
+	<context:property-placeholder
+		location="classpath:resource/a01_conf.txt" />
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> <!-- 자원해제하는 메서드 선언 -->
+		<property name="driverClassName" value="${db.driver}" />
+		<property name="url" value="${db.host}" />
+		<property name="username" value="${db.user}" />
+		<property name="password" value="${db.pwd}" />
+	</bean>
+
+	<tx:annotation-driven proxy-target-class="true" />
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<!-- 2. mybatis framework를 컨테이너에서 사용하기.. 1) 공통 mybatis 설정 xml 2) 객체를 자동생성 
+		하게 하는 dao interface 위치 선언. # DB 연동 처리 형식 1. dataSource(기본 연결 정보 처리 객체) 2. 
+		transactionManager(트랜잭션 처리 - optional) [트렌젝션? 트랜잭션(Transaction 이하 트랜잭션)이란, 
+		데이터베이스의 상태를 변화시키기 해서 수행하는 작업의 단위를 뜻한다. 간단하게 말해서 아래의 질의어(SQL)를 이용하여 데이터베이스를 
+		접근 하는 것을 의미한다.] ref="dataSource" (위 연결 객체 할당) 3. sqlSesscionFactory(mybatis 
+		framework 연결 및 공통 설정 파일 지정) [SqlSessionFactory는 데이터베이스와의 연결과 SQL의 실행에 대한 
+		모든 것을 가진 가장 중요한 객체다. 이 객체가 DataSource를 참조하여 MyBatis와 Mysql 서버를 연동시켜준다] ref="dataSource" 
+		(위 연결 객체 할당) configLocation::/resource/mybatis.Spring.xml(공통파일) == 사용할 vo의 
+		alias명 지정 사용할 mapper.xml 설정 처리.. typeAlias alias="emp" type="springweb.z01_vo.Emp" 
+		mapper source="resource/ExpMapper.xml" == XXXMapper.xml mapper namespace="springwep.a02_mvc.a03_dao.A01_Dao" 
+		<select id="" parameterType="" resultType=""> ==> 활용할 sql </select> == 연동된 
+		dao 인터페이스 4. MapperScannerConfigurce : 자동 객체생성 interface dao 패키지 범위 설정 1) 
+		basePackage : springweb.a02_mvc.a03_dao 해당 패키지 안에 있는 모든 Dao interface는 실제 
+		객체를 상속해서 DB연결 처리해준다.. 2) 위 내용에서 다른 패키지를 추가하려면 아래 형식으로 처리하면 된다. value="패키지1, 
+		패키지2,..." ,로 구분하여 추가 처리... -->
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation"
+			value="classpath:/resource/mybatis.Spring.xml" />
+	</bean>
+
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage"
+			value="springweb.a02_mvc.a03_dao" />
+	</bean>
+
+	<!-- view 설정 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="order" value="1" />
+	</bean>
+
+	<bean id="btnViewResolver"
+		class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<property name="order" value="0" />
+	</bean>
+	<bean id="pageJsonReport"
+		class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+		<property name="contentType" value="text/html;charset=utf-8" />
+	</bean>
+
+	<!-- 파일 업로드뷰 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+
+	<!-- 메일 발송 서버 접속 객체 선언 -->
+	<!-- 메일발송 서버의 한계 1. 발신자 : 지정된 메일 계정 (등록한 메일주소) -->
+	<bean id="mailSender"
+		class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="port" value="587" />
+		<property name="username" value="kky77209@gmail.com" />
+		<property name="password" value="dhaz kadm uphv mzaa" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<!-- 메일 서버와의 연결에 STARTTLS를 사용하여 보안을 강화합니다. STARTTLS는 메일서버와 클라이언트간의 통신을 
+					암호화하는데 사용되며, 특히 공개 네트워크에서 데이터 보호에 중요하다. -->
+				<prop key="mail.smtp.auth">true</prop>
+				<!-- 이 값이 true로 설정되면, smtp(메일 발송서버)가 사용자 인증을 요구함을 의미합니다. 이는 메일 발송을 위해 
+					사용자가 이름과 비밀번호를 제공해야 함을 나타냅니다 -->
+				<prop key="mail.transport.protocol">smtp</prop>
+				<!-- 이 속성은 메일 발송에 사용되는 프로토콜(통신규약)을 정의합니다. 여기서는 smtp로 설정되어 있는 SMTP(Simple 
+					Mail Transfer Protocol)를 사용하여 메일을 발송하게 됩니다. -->
+				<prop key="mail.debug">true</prop>
+				<!-- 이 속성을 true로 설정하면 메일 발송 과정에서의 디버깅 정보가 출력됩니다. 이는 문제 해결시 유용하게 사용할 수 
+					있습니다. -->
+				<prop key="mail.smtp.ssl.true">smtp.gmail.com</prop>
+				<!-- 여기서 stmp.gmail.com으로 설정되어 있는 것을 SMTP서버의 주소를 신뢰할 수 있는 호스트로 지정한다는 
+					의미입니다. ssl/tls연결에서 중요한 보안설정입니다 -->
+				<prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
+				<!-- 이 속성은 사용한 ssl/tls프로토콜의 버전을 지정합니다. TLSv1.2는 현재 널리 사용되고 보안이 강화된 프로토콜 
+					버전입니다. # 이러한 설정들은 메일 발송의 보안과 안전성을 강화하고 SMTP 서버와의 통신을 제어하는 데 중요합니다. 특히 mail.smtp.ssl.trust와 
+					mail.smtp.ssl.protocols같은 속성들은 보안에 중점을 둔 메일 발송 환경을 구축하는데 필수적입니다. 또한, mail.debug 
+					속성은 개발 및 테스트 단계에서 유용하게 사용될 수 있습니다. -->
+			</props>
+		</property>
+
+	</bean>
 </beans>      

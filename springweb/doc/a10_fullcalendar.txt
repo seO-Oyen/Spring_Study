@@ -31,6 +31,17 @@
 			
 			
 	- 주요 sql작성 : 이벤트의 리스트, 등록, 수정, 삭제에 필요한 sql을 작성합니다.
+		start1, end1, url ==> column과 vo의 속성이 차이가 나기에 resultMap으로 처리한다.
+		(start, end, urlLink)로 처리
+		start 내장된 키워드로 컬럼명으로 사용할 수 없다.
+		url은 상세처리시 클릭시 해당 일정에 연결되는 link로 바로 이동되기에 따로 urlLink로 상세화면에서 해당 링크로
+		이동시 필요하여 처리함
+		
+		to_char(start1, 'YYYY-MM-DD"T"HHH24:MI:SS"+09:00"')
+		날짜형(Date)를 json데이터에서 javascript로 ISO현태의 문자열 데이터로
+		api에서 사용하기에 변경처리한다.
+		ex) {"start":"2024-01-22T09:30:20+09:00"}
+		
 	- vo/dto클래스 선언 : 데이터 전송 객체 및 리스트를ㄹ 위하여 선언하여, 데이터베이스와의 통신에 사용합니다.
 	- dao/mapper 선언 : 데이터 접근 객체(dao), mybatis mapper를 정의하여 데이터베이스 연동을 처리합니다.
 	3) frontend처리 (화면-jsp/js)
@@ -128,7 +139,70 @@ view
 			resource 속성으로 함수를 호출하면 전체 DB에 있는 일정 json데이터를
 			ajax에 의해 가져와서(calList.do)
 			fullcalendar api에 할당 처리한다.
+			
+			내부적으로 화면에 로딩되는 데이터들이 json 배열 형태로 가지고 있다.
+			Calendar api 안에 전체 데이터를 각 일정마다 가지고 있고
+			
 		모달 화면
 			등록처리
-			select() 이벤트에 의해서 기본 form이 로딩되어 처리할 수 있게 해놓고
-			입력이 되고 ajax로 등록이 form에 입력된 데이터를 insertCalendar.do로 controller단을 호출하여 입력을 하게 된다.
+			1) 모달창에 등록 form 로딩
+				select() 이벤트에 의해서 기본 form이 로딩되어 처리할 수 있게 해놓고
+				입력이 되고 ajax로 등록이 form에 입력된 데이터를 insertCalendar.do로 controller단을 호출하여 입력을 하게 된다.
+				해당 메서드를 호출하면 입력/입력 후 전체데이터를 가져온다
+				==> 위 이벤트 공백인 날짜와 시간을 클릭시, 매개변수 arg로 전체일정 중에
+				해당 날짜를 등록할 수 있는 객체를 가져올 수 있게 해놓고 입력이 되고
+				ajax로 등록할 수 있게 form에 입력된 데이터를 insertCalendar.do로
+				controller단을 호출해서 해당메서드를 호출하면 입력 / 입력 후 전체 데이터를
+				가져온다.
+				calendar api 자체에서 지원되는 속성(시작일시, 종료일시, 종일/시간여부) +
+				입력 및 선택에 의해서 등록할 값을 모달에 form (제목, 작성자, 내용, 배경색상,
+				글자 색상, 참고 link페이지)를 로딩시켜 등록할 준비를 처리한다.
+			
+			2) 하단에 등록 클릭
+				위에 기본 api + 입력된 내용을 등록하는 controller 요청메서드
+				(insertCalendar.do)를 ajax로 호출하여 등록 처리한다.
+			
+		내용 확인 및 수정/삭제 처리
+			eventClick() 이벤트에 의해서 상세정보를 arg를 통해서
+			모달창을 통해 출력하여 화면을 볼 수 있게 한다.
+			arg.event :  해당 일정에 등록된 속성
+			들어가 있는 내용에서 상세 정보들을 모달창 form에 할당한 후, 로딩한다.
+			
+			ex) $("[name=id]").val(arg.event.id)
+			ex) $("[name=title]").val(arg.event.title)
+			등록과 동일한 모달창이기에 기능 버튼을 보이기/보이지않게 처리
+			ex) $("#regBtn").hide();
+				$("#upBtn").show();
+				$("#delBtn").show();
+			
+		삭제버튼 클릭시
+			sql
+				delete
+				from calendar
+				where id = #{id}
+			dao
+				@Delte("")
+				int deleteBoard(int id)
+				
+				
+# 전체 구조 #
+controller	
+	해당 요청화면을 호출하고, 요청값에 따라 json데이터를 전달해주는 역할을 한다.
+	A07_FullCalendarController.java
+		calendar.do : 화면폼(JSP)
+		
+		
+		
+		
+	여러가지 이벤트에 의한 수정 처리
+	- 일정을 축소/확장, 클릭해서 스크롤로 일정의 변경
+	==> 날짜 변경으로 ajax처리
+	위 내용을 처리를 위해서 이동시 특정한 경우에는 모달창 로딩 없이 바로 ajax로 수정처리하게
+	하면 된다.
+	필요로 하는 이벤트 
+	
+	공통 form 데이터 할당하는 함수 정의
+	수정시 바로 form 화면 로딩 없지만 데이터는 form에 할당해야되기에 이 처리가 필요하다
+	일정만 변경하는 form 데이터 처리
+	eventDrop : 특정 일정을 드래그해서 드랍시 발생하는 이벤트 처리
+	eventResize : 특정 일정을 사이즈 변경으로 발생하는 이벤트 처리

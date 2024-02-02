@@ -18,4 +18,12 @@ public class A07_CalendarService {
 	public String insertCalendar(Calendar ins) {
 		return dao.insertCalendar(ins) > 0 ? "등록성공" : "등록실패";
 	}
+	
+	public String updateCalendar(Calendar upt) {
+		return dao.updateCalendar(upt) > 0 ? "수정성공" : "수정실패";
+	}
+	
+	public String deleteCalendar(int id) {
+		return dao.deleteBoard(id) > 0 ? "삭제성공" : "삭제 실패";
+	}
 }

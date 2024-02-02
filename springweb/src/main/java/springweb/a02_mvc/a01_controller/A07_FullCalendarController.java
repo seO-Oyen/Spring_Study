@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import springweb.a02_mvc.a02_service.A07_CalendarService;
 import springweb.z01_vo.Calendar;
@@ -37,5 +39,21 @@ public class A07_FullCalendarController {
 	@GetMapping("insertCalendar.do")
 	public String insertCalendarFrm() {
 		return "WEB-INF\\views\\a01_start\\a17_calendarInsForm.jsp";
+	}
+	
+	@PostMapping("updateCalendar.do")
+	public String updateCalendar(Calendar upt, Model d) {
+		d.addAttribute("msg", service.updateCalendar(upt));
+		d.addAttribute("callist", service.getCalList());
+		
+		return "pageJsonReport";
+	}
+	
+	@PostMapping("deleteCalendar.do")
+	public String deleteCalendar(@RequestParam("id") int id, Model d) {
+		d.addAttribute("msg", service.deleteCalendar(id));
+		d.addAttribute("callist", service.getCalList());
+		
+		return "pageJsonReport";
 	}
 }

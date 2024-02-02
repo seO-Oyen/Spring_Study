@@ -1,0 +1,12 @@
+# 학습목표
+- Spring Boot에서 객체 요청 처리 방법 이해
+- 모델 데이터의 사용법 학습
+- 데이터 베이스 설정 및 연동 방법 숙지
+
+# 주요 핵심 키워드와 개념
+- Controller : 클라이언트의 요청을 처리하고 응답을 반환하는 컴포넌트
+- Repository/DAO : 데이터베이스와의 상호작용을 담당하는 클래스
+- Service : 비즈니스 로직을 처리하는 클래스
+- Model : 뷰에 데이터를 전달하는 컨테이너
+- Spring Data JPA : 데이터베이스 작업을 쉽게 할 수 있게 도와주는 모듈
+- application.properties/yml : 

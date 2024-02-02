@@ -1,0 +1,73 @@
+# 스프링 부트 환경설정
+1. 개발 환경 설정
+	1) sts 다운로드 및 실행
+	2) open jdk 17 버젼 설정
+		C:\a01_springbt\jdk-17\bin
+		폴더 복사하여 운영체제에서 path로 등록해서 어느경로에서든지 해당 폴더에있는 명령어가
+		수행되게 처리
+		내 PC 오른쪽 마우스 클릭 속성 ==> 고급 시스템 설정
+		==> 환경변수 ==> 시스템 변수 ==> 새로만들기
+		==> 복사한 경로 붙여넣기 ==> 위로 이동으로 가장 위로 이동 처리
+		==> 다시 cmd창 로딩
+		java -version
+		jdk설정된 내용 메시지 확인
+	3) sts 특정 폴드에 복사 java 명령어를 통해 실행
+		- c:\a01_springbt\
+		- c:\a01_springbt\workspace
+		- c:\a01_springbt\ 폴더에 sts 파일 복사 및 sts.jar로 파일명 변경
+		java -jar sts.jar
+	4) 스프링 부트 실행파일 실행 c:\a01_springbt\workspace
+		로딩하여 초기 화면 로딩
+		# 필요로 하는 환경설정
+		1) plugin 프로그램
+			jsp 검색후 webdeveloper tools 설치
+		2) 소스파일 utf-8 환경
+			window ==> preference ==> web
+				css, html, jsp
+		3) window ==> preferences ==> general ==> workspace
+			refresh native hools and poolings 체크 하단 apply
+			외부에서 해당 폴더로 추가된 파일이 있을때 refreash 없이 바로 뜨게 해줌
+		
+2. 초기화면에서 스프링 부트 
+	1) start 스프링 프로젝트 옵션을 통해서 스프링 부트 프로젝트 생성
+	2) 기본환경 maven/gradle
+		maven 환경으로 스프링 부트 생성
+		필요로 하는 lib 설정 
+			jdbc, springweb, mybatis
+			
+	3) pom.xml
+		을 통해서 jsp view를 사용할 수 있게 설정 처리
+	4) 기본환경 설정 후, 
+		application.properties
+			톰캣포트
+		configuration/MvcConfiguration.java를 통해 초기 view에 대한 설정 처리
+		controller/view 를 만들어 스프링 부트 첫 화면 설정
+			기본 jsp(view단 폴더 생성)
+			main폴더 하위에 webapp/WEB-INF/views를 만들어 jsp 가 호출될 수 있도록 한다.
+		
+		스프링 부트의 컨테이너 설정 프로세스
+			1) 기본적으로 spring mvc에서 많이 활용되는 부분은 자동으로 등록이 되어서 처리된다.(내장)
+			2) pom.xml에 의해서 받아지는 lib 파일과 함께 자동을 컨테이너에 등록되는 부분이 있음 (내장)
+			3) application.properties 추가하여 처리할 컨테이너에 등록할 내용
+			4) configuration 패키지를 만들어 java 프로그램의 컨테이너 등록할 객체를 선언하여 처리
+			
+			
+3. 기본 MVC 처리하기
+1) controller 
+- 요청 url 선언
+	@RequestMapping : get/post방식 둘 다 처리 
+	@GetMapping
+	@PostMapping
+- 메서드 선언
+	요청값 처리
+	@RequestParam
+		value="요청키"
+		defaultValue="" : 요청값이 없을 때, 기본데이터 설정
+	모델 데이터 처리 Model d
+		d.addAttribute("키", "값")
+			view단에 키로 보낼 데이터 ${키}
+2) view 단 처리(jsp)
+	- controller에 넘겨준 데이터를 화면 구성과 함께 처리
+	- form method="get/post" 하위의 요청객체를 name="요청키"
+		value="요청값" 형태로 controller단을 다시 호출하여 처리
+		controller 단에서 넘겨온 모델 데이터 처리 : ${키}
